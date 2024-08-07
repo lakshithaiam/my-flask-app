@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials-id'
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_IMAGE_NAME = 'devopsuses/my-repo'
+        DOCKER_IMAGE_TAG = 'latest'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -13,10 +20,20 @@ pipeline {
                 sh 'echo "Building application..."'
             }
         }
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Running tests...'
-                sh 'echo "Running tests..."'
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ."
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: "${DOCKER_CREDENTIALS_ID}", url: "${DOCKER_REGISTRY}"]) {
+                        sh "docker push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
+                    }
+                }
             }
         }
     }
