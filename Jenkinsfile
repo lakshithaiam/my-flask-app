@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub_id')
+        DOCKER_HUB_CREDENTIALS = credentials('docker_id')
         DOCKER_IMAGE = "devopsuses/my-flask-app"
     }
 
