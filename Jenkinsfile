@@ -14,12 +14,6 @@ pipeline {
                 git branch: 'main', url: 'git@github.com:lakshithaiam/my-flask-app.git', credentialsId: 'SSH_Username_with_private_key'
             }
         }
-        stage('Build') {
-            steps {
-                echo 'Building the application...'
-                sh 'echo "Building application..."'
-            }
-        }
         stage('Build Docker Image') {
             steps {
                 script {
