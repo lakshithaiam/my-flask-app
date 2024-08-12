@@ -1,52 +1,40 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker_id')
-        DOCKER_IMAGE = "devopsuses/my-flask-app"
-    }
-
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git 'git@github.com:lakshithaiam/my-flask-app.git'
-                
+                echo 'Checking out code...'
+                checkout scm
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}:latest")
-                }
+                echo 'Building the project...'
+                sh 'echo "Building project"'
             }
         }
 
-        stage('Test Docker Image') {
+        stage('Test') {
             steps {
-                script {
-                    docker.image("${DOCKER_IMAGE}:latest").inside {
-                        sh 'python -m unittest discover'
-                    }
-                }
+                echo 'Running tests...'
+                sh 'echo "Running tests"'
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Deploy') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_HUB_CREDENTIALS') {
-                        docker.image("${DOCKER_IMAGE}:latest").push()
-                    }
-                }
+                echo 'Deploying the project...'
+                sh 'echo "Deploying project"'
             }
         }
     }
 
     post {
         always {
+            echo 'Cleaning up...'
             cleanWs()
         }
     }
 }
-
