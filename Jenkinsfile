@@ -4,7 +4,6 @@ pipeline {
     environment {
         DOCKER_IMAGE_NAME = 'devopsuses/my-repo'
         DOCKER_IMAGE_TAG = 'latest'
-        DOCKER_REGISTRY = 'index.docker.io'
         DOCKER_CREDENTIALS_ID = 'docker_id'  // ID of Docker Hub credentials in Jenkins
     }
 
