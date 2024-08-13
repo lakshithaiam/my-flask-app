@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'my-flask-app'
-        DOCKER_IMAGE_TAG = 'latest'
+        DOCKER_IMAGE_NAME = 'devopsuses/my-repo'
+        DOCKER_IMAGE_TAG = 'my-flask-app'
         DOCKER_REGISTRY = 'index.docker.io'
         DOCKER_CREDENTIALS_ID = 'docker_id'  // ID of Docker Hub credentials in Jenkins
     }
