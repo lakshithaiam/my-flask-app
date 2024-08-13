@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout code from your GitHub repository
-                git 'git@github.com:lakshithaiam/my-flask-app.git'
+                git 'https://github.com/lakshithaiam/my-flask-app.git'
             }
         }
 
