@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'flask-app'
+        DOCKER_IMAGE_NAME = 'devopsuses/my-repo'
         DOCKER_IMAGE_TAG = 'latest'
+        DOCKER_REGISTRY = 'index.docker.io'
+        DOCKER_CREDENTIALS_ID = 'docker_id'  // ID of Docker Hub credentials in Jenkins
     }
 
     stages {
@@ -32,8 +34,13 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploying the project...'
-                sh 'echo "Deploying project"'
+                script {
+                    echo 'Deploying the Docker image...'
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                        docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
+                    }
+                    echo 'Docker image deployed successfully!'
+                }
             }
         }
     }
