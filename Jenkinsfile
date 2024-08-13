@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from your GitHub repository
-                git 'https://github.com/lakshithaiam/my-flask-app.git'
+                git 'git@github.com:lakshithaiam/my-flask-app.git'
             }
         }
 
