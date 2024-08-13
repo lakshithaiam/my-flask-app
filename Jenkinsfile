@@ -2,43 +2,36 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'devopsuses/my-repo'
-        DOCKER_IMAGE_TAG = 'latest'
-        DOCKER_CREDENTIALS_ID = 'docker_id'  // ID of Docker Hub credentials in Jenkins
+        DOCKER_CREDENTIALS_ID = 'docker_id' // Jenkins credentials ID for Docker Hub
+        DOCKER_IMAGE_NAME = 'devopsuses/my-repo'           // Replace with your Docker image name
+        DOCKER_TAG = 'latest'                            // Replace with your desired tag
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out code...'
-                checkout scm
+                // Checkout code from your GitHub repository
+                git 'git@github.com:lakshithaiam/my-flask-app.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    echo 'Building Docker image...'
-                    docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}")
+                    // Build the Docker image
+                    docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
                 }
             }
         }
 
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh 'echo "Running tests"'
-            }
-        }
-
-        stage('Deploy') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    echo 'Deploying the Docker image...'
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
-                        docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
+                    // Login to Docker Hub
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                        // Push the Docker image
+                        docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}").push("${DOCKER_TAG}")
                     }
-                    echo 'Docker image deployed successfully!'
                 }
             }
         }
@@ -46,8 +39,8 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up...'
-            cleanWs()
+            // Clean up Docker images
+            sh 'docker system prune -af'
         }
     }
 }
