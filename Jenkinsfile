@@ -2,15 +2,20 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'myjenkins' // Replace with your Docker Hub credentials ID
-        DOCKER_IMAGE = 'devopsuses/my-repo:latest' // Replace with your Docker image name and tag
+        // Define environment variables for Docker Hub and GitHub
+        DOCKER_HUB_REPO = 'devopsuses/my-repo' // Docker Hub repository name
+        DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials_id' // Jenkins credentials ID for Docker Hub
+        GIT_REPO = 'git@github.com:lakshithaiam/my-flask-app.git' // GitHub repository SSH URL
+        GIT_CREDENTIALS = 'github-ssh-key' // Jenkins credentials ID for GitHub SSH
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from the repository
-                git url: 'git@github.com:lakshithaiam/my-flask-app.git'
+                // Checkout code from GitHub using SSH
+                git branch: 'main',
+                    credentialsId: "${GIT_CREDENTIALS}",
+                    url: "${GIT_REPO}"
             }
         }
 
@@ -18,30 +23,18 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
-                    docker.build(DOCKER_IMAGE)
+                    docker.build("${DOCKER_HUB_REPO}")
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push to Docker Hub') {
             steps {
                 script {
-                    // Log in to Docker Hub
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        // Push the Docker image to Docker Hub
-                        docker.image(DOCKER_IMAGE).push('latest')
+                    // Push the Docker image to Docker Hub
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
+                        docker.image("${DOCKER_HUB_REPO}").push('latest')
                     }
-                }
-            }
-        }
-
-        // Optional: Add a deployment stage here if needed
-        stage('Deploy') {
-            steps {
-                script {
-                    // Example deployment command
-                    echo 'Deploying to production...'
-                    // You can replace this with your actual deployment logic
                 }
             }
         }
@@ -49,9 +42,8 @@ pipeline {
 
     post {
         always {
-            // Clean up Docker resources if needed
+            // Clean up workspace after build
             cleanWs()
         }
     }
 }
-
