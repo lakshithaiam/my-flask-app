@@ -123,7 +123,7 @@ resource "aws_security_group" "my_sg" {
 # Create an AWS Key Pair
 resource "aws_key_pair" "my_key" {
   key_name   = "my-key"
-  public_key = file("/home/lakshithaiam/.ssh")
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 # Create three EC2 instances, each in a different subnet
