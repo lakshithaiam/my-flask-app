@@ -38,6 +38,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Create Infrastructure') {
+            steps {
+                script { 
+                    dir('terraform'){
+                        sh "terraform init"
+                        sh "terraform plan"
+                        sh "terraform apply --auto-approve"
+                    }
+                }
+            }
+        }
     }
 
     post {
