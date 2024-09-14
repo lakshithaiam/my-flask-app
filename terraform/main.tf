@@ -145,7 +145,7 @@ resource "aws_instance" "my_instances" {
   }
 }
 
-# Output the instance details
+# Output the instance details.
 output "instance_ids" {
   value = aws_instance.my_instances[*].id
 }
