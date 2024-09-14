@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define environment variables for Docker Hub and GitHub
-        DOCKER_HUB_REPO = 'devopsuses/my-repo' // Docker Hub repository name
+        DOCKER_HUB_REPO = 'lakshithaiam/my-flask-app' // Docker Hub repository name
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials_id' // Jenkins credentials ID for Docker Hub
         GIT_REPO = 'git@github.com:lakshithaiam/my-flask-app.git' // GitHub repository SSH URL
         GIT_CREDENTIALS = 'github-ssh-key' // Jenkins credentials ID for GitHub SSH
