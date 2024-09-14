@@ -5,7 +5,7 @@ provider "aws" {
 
 # Create a VPC with DNS settings
 resource "aws_vpc" "my_vpc" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"  
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
@@ -120,19 +120,14 @@ resource "aws_security_group" "my_sg" {
   }
 }
 
-# Create an AWS Key Pair
-resource "aws_key_pair" "my_key" {
-  key_name   = "my-key"
-  public_key = file("/home/lakshithaiam/.ssh")
-}
-
+# Use existing AWS Key Pair
 # Create three EC2 instances, each in a different subnet
 resource "aws_instance" "my_instances" {
   count         = 3
   ami           = "ami-0e86e20dae9224db8"
   instance_type = "t2.micro"
 
-  key_name = aws_key_pair.my_key.key_name
+  key_name = "my-key"  # Reference the existing key pair
 
   subnet_id = element(
     [
