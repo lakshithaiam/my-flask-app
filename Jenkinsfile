@@ -7,6 +7,7 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials_id' // Jenkins credentials ID for Docker Hub
         GIT_REPO = 'git@github.com:lakshithaiam/my-flask-app.git' // GitHub repository SSH URL
         GIT_CREDENTIALS = 'github-ssh-key' // Jenkins credentials ID for GitHub SSH
+        ANSIBLE_SERVER = "34.134.192.113"
     }
 
     stages {
@@ -52,6 +53,23 @@ pipeline {
                 }
             }
         }
+
+        stages {
+        stage("copy files to ansible server") {
+            steps {
+                script {
+                    echo "copying all neccessary files to ansible control node"
+                    sshagent(['ansible-server-key']) {
+                        sh "scp -o StrictHostKeyChecking=no ansible/* root@${ANSIBLE_SERVER}:/root"
+
+                        withCredentials([sshUserPrivateKey(credentialsId: 'ec2-servers-keys', keyFileVariable: 'keyfile', usernameVariable: 'user')]) {
+                            sh 'scp $keyfile root@$ANSIBLE_SERVER:/root/SSH-KEY.PEM'
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     post {
