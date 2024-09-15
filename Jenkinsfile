@@ -54,7 +54,6 @@ pipeline {
             }
         }
 
-        stages {
         stage("copy files to ansible server") {
             steps {
                 script {
@@ -62,14 +61,14 @@ pipeline {
                     sshagent(['ansible-server-key']) {
                         sh "scp -o StrictHostKeyChecking=no ansible/* root@${ANSIBLE_SERVER}:/root"
 
-                        withCredentials([sshUserPrivateKey(credentialsId: 'ec2-servers-keys', keyFileVariable: 'keyfile', usernameVariable: 'user')]) {
+                        withCredentials([sshUserPrivateKey(credentialsId: 'ec2-servers-keys', keyFileVariable: 'keyfile', usernameVariable: 'user')]) 
+                        {
                             sh 'scp $keyfile root@$ANSIBLE_SERVER:/root/SSH-KEY.PEM'
                         }
                     }
                 }
             }
         }
-
     }
 
     post {
