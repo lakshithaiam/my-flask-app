@@ -1,4 +1,4 @@
-# Define the AWS provider
+/*# Define the AWS provider
 provider "aws" {
   region = "us-east-1"
 }
@@ -157,3 +157,129 @@ output "instance_public_ips" {
 output "instance_public_dns" {
   value = aws_instance.my_instances[*].public_dns
 }
+
+*/
+
+
+# Define the AWS provider
+provider "aws" {
+  region = "us-east-1"
+}
+
+# Create a VPC with DNS settings
+resource "aws_vpc" "my_vpc" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  tags = {
+    Name = "myvpc"
+  }
+}
+
+# Create an Internet Gateway
+resource "aws_internet_gateway" "my_igw" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  tags = {
+    Name = "my-igw"
+  }
+}
+
+# Create a Route Table
+resource "aws_route_table" "my_route_table" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.my_igw.id
+  }
+
+  tags = {
+    Name = "my-route-table"
+  }
+}
+
+# Create a single Subnet
+resource "aws_subnet" "my_subnet" {
+  vpc_id                  = aws_vpc.my_vpc.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "my-subnet"
+  }
+}
+
+# Associate Route Table with Subnet
+resource "aws_route_table_association" "my_subnet_association" {
+  subnet_id      = aws_subnet.my_subnet.id
+  route_table_id = aws_route_table.my_route_table.id
+}
+
+# Create a Security Group
+resource "aws_security_group" "my_sg" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "my-sg"
+  }
+}
+
+# Use existing AWS Key Pair
+# Create a single EC2 instance
+resource "aws_instance" "my_instance" {
+  ami           = "ami-0e86e20dae9224db8"
+  instance_type = "t2.micro"
+
+  key_name = "abc"  # Reference the existing key pair
+
+  subnet_id = aws_subnet.my_subnet.id
+
+  vpc_security_group_ids = [aws_security_group.my_sg.id]
+
+  tags = {
+    Name = "my-instance"
+  }
+}
+
+# Output the instance details
+output "instance_id" {
+  value = aws_instance.my_instance.id
+}
+
+output "instance_public_ip" {
+  value = aws_instance.my_instance.public_ip
+}
+
+output "instance_public_dns" {
+  value = aws_instance.my_instance.public_dns
+}
+
