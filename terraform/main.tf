@@ -127,7 +127,7 @@ resource "aws_instance" "my_instances" {
   ami           = "ami-0e86e20dae9224db8"
   instance_type = "t2.micro"
 
-  key_name = "my-key"  # Reference the existing key pair
+  key_name = "abc"  # Reference the existing key pair
 
   subnet_id = element(
     [
