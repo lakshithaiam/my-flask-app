@@ -165,7 +165,7 @@ output "instance_public_dns" {
 provider "aws" {
   region = "us-east-1"
 }
-
+/*
 # Create a VPC with DNS settings
 resource "aws_vpc" "my_vpc" {
   cidr_block           = "10.0.0.0/16"
@@ -269,7 +269,7 @@ resource "aws_instance" "my_instance" {
     Name = "my-instance"
   }
 }
-
+*/
 # Output the instance details
 output "instance_id" {
   value = aws_instance.my_instance.id
