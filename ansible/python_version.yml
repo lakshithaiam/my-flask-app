@@ -1,0 +1,11 @@
+---
+- name: Test Python Interpreter
+  hosts: aws_ec2
+  tasks:
+    - name: Print Python Version
+      command: python3 --version
+      register: python_version
+    - name: Show Python Version
+      debug:
+        msg: Python version on host is {{ python_version.stdout }}
+

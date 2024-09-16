@@ -1,0 +1,8 @@
+---
+- name: Deploy to EC2 instances
+  hosts: aws_ec2  # This should match the group name in your inventory
+  remote_user: ubuntu  # Ensure this matches the user for your EC2 instances
+  tasks:
+    - name: Ping all EC2 instances
+      ansible.builtin.ping:
+
