@@ -31,9 +31,9 @@ pipeline {
                         remote.user = user
                         remote.identityFile = keyfile
                         sshCommand remote: remote, command: "ansible --version"
+                        sshCommand remote: remote, command: "ansible-inventory -i aws_ec2.yml --list"
+                        sshCommand remote: remote, command: "ansible-inventory -i aws_ec2.yml --graph"
                        
-
-
                     }
                 }
             }
