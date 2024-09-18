@@ -41,6 +41,10 @@ pipeline {
         }
 
         stage('Create Infrastructure') {
+            environment{
+                AWS_ACCESS_KEY_ID = ('jenkins_aws_access_key_id')
+                AWS_SECRECT_ACCESS_KEY = ('jenkins_aws_secrect_access_key')
+            }          
             steps {
                 script { 
                     dir('terraform'){
@@ -50,6 +54,16 @@ pipeline {
                         sh "terraform plan"
                         sh "terraform apply --auto-approve"
                     }
+                }
+            }
+        }
+        stage('Get some instance Infomation') {
+            steps {
+                sshagent(['ec2-server-key']){
+                    sh "hostname"
+                    sh "lsb_release -alsb_release -a"
+                    sh "pwd"
+                    sh "whoami"
                 }
             }
         }
