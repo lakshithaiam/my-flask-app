@@ -157,10 +157,3 @@ output "instance_public_ips" {
 output "instance_public_dns" {
   value = aws_instance.my_instances[*].public_dns
 }
-
-
-
-output "instance_public_dns" {
-  value = aws_instance.my_instance.public_dns
-}
-
