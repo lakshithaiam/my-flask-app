@@ -59,7 +59,7 @@ pipeline {
         }
         stage('Get some instance Infomation') {
             steps {
-                sshagent(['ec2-server-key']){
+                sshagent(['server_ssh_key_terraform']){
                     sh "hostname"
                     sh "ls -a"
                     sh "pwd"
