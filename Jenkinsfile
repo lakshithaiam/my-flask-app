@@ -42,8 +42,8 @@ pipeline {
 
         stage('Create Infrastructure') {
             environment{
-                AWS_ACCESS_KEY_ID = ('jenkins_aws_access_key_id')
-                AWS_SECRECT_ACCESS_KEY = ('jenkins_aws_secrect_access_key')
+                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+                AWS_SECRECT_ACCESS_KEY = credentials('jenkins_aws_secrect_access_key')
             }          
             steps {
                 script { 
@@ -53,18 +53,31 @@ pipeline {
                         sh "terraform init"
                         sh "terraform plan"
                         sh "terraform apply --auto-approve"
+                        EC2_PUBLIC_IP = sh(
+                            script: "terraform output instance_public_ips"
+                            returnStdout: true
+                        ).trim()
                     }
                 }
             }
         }
+
         stage('Get some instance Infomation') {
             steps {
+
+                echo "waithing for EC2 server to initialize"
+                sleep(time: 120, unit: "SECONDS")
+
+                echo "creating new file"
+                echo "${EC2_PUBLIC_IP}"
+
+                def ec2Instance = "ubuntu@${EC2_PUBLIC_IP}"
+
                 sshagent(['server_ssh_key_terraform']){
-                    sh "hostname"
-                    sh "ls -a"
-                    sh "pwd"
-                    sh "whoami"
+                    sh "scp -o StrictHostKeyChecking=no README.md ${ec2Instance}:/home/ubuntu"
+                    
                 }
+            
             }
         }
 
