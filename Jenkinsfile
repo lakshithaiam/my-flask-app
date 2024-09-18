@@ -61,7 +61,7 @@ pipeline {
             steps {
                 sshagent(['ec2-server-key']){
                     sh "hostname"
-                    sh "lsb_release -alsb_release -a"
+                    sh "ls -a"
                     sh "pwd"
                     sh "whoami"
                 }
