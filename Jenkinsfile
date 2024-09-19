@@ -59,10 +59,6 @@ pipeline {
             }
         }
 
-        stage('Get some instance Infomation') {
-            steps {}
-        }
-
     }
 
     post {
