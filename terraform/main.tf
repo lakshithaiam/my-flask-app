@@ -9,7 +9,7 @@ resource "aws_vpc" "my_vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "myvpc"
+    Name = "my-vpc-${terraform.workspace}"
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.my_vpc.id
 
   tags = {
-    Name = "my-igw"
+    Name = "my-igw-${terraform.workspace}"
   }
 }
 
@@ -32,7 +32,7 @@ resource "aws_route_table" "my_route_table" {
   }
 
   tags = {
-    Name = "my-route-table"
+    Name = "my-route-table-${terraform.workspace}"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_subnet" "my_subnet_1" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
   tags = {
-    Name = "my-subnet-1"
+    Name = "my-subnet-1-${terraform.workspace}"
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_subnet" "my_subnet_2" {
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
   tags = {
-    Name = "my-subnet-2"
+    Name = "my-subnet-2-${terraform.workspace}"
   }
 }
 
@@ -63,7 +63,7 @@ resource "aws_subnet" "my_subnet_3" {
   availability_zone       = "us-east-1c"
   map_public_ip_on_launch = true
   tags = {
-    Name = "my-subnet-3"
+    Name = "my-subnet-3-${terraform.workspace}"
   }
 }
 
@@ -116,12 +116,12 @@ resource "aws_security_group" "my_sg" {
   }
 
   tags = {
-    Name = "my-sg"
+    Name = "my-sg-${terraform.workspace}"
   }
 }
 
 # Use existing AWS Key Pair
-# Create three EC2 instances, each in a different subnet
+# Create EC2 instances, each in a different subnet
 resource "aws_instance" "my_instances" {
   count         = 3
   ami           = "ami-0e86e20dae9224db8"
@@ -141,7 +141,7 @@ resource "aws_instance" "my_instances" {
   vpc_security_group_ids = [aws_security_group.my_sg.id]
 
   tags = {
-    Name = "my-instance-${count.index + 1}"
+    Name = "my-instance-${count.index + 1}-${terraform.workspace}"
   }
 }
 
