@@ -53,10 +53,7 @@ pipeline {
                         sh "terraform init"
                         sh "terraform plan"
                         sh "terraform apply --auto-approve"
-                        EC2_PUBLIC_IP = sh(
-                            script: "terraform output instance_public_ips"
-                            returnStdout: true
-                        ).trim()
+                        
                     }
                 }
             }
