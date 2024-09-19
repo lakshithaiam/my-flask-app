@@ -63,22 +63,7 @@ pipeline {
         }
 
         stage('Get some instance Infomation') {
-            steps {
-
-                echo "waithing for EC2 server to initialize"
-                sleep(time: 120, unit: "SECONDS")
-
-                echo "creating new file"
-                echo "${EC2_PUBLIC_IP}"
-
-                def ec2Instance = "ubuntu@${EC2_PUBLIC_IP}"
-
-                sshagent(['server_ssh_key_terraform']){
-                    sh "scp -o StrictHostKeyChecking=no README.md ${ec2Instance}:/home/ubuntu"
-                    
-                }
-            
-            }
+            steps {}
         }
 
     }
