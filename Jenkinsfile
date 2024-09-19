@@ -34,7 +34,7 @@ pipeline {
                         sshCommand remote: remote, command: "ansible-inventory -i aws_ec2.yml --list"
                         sshCommand remote: remote, command: "ansible-inventory -i aws_ec2.yml --graph"
                         sshCommand remote: remote, command: "ls -l"
-                        sshCommand remote: remote, command: "ansible-playbook -i aws_ec2.yml newping.yml"
+                        sshCommand remote: remote, command: "ansible-playbook -i aws_ec2.yml newping.yml python_version.yml installdocker.yml appdeploy.yml"
                         
                        
                     }

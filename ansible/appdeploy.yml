@@ -1,6 +1,9 @@
 ---
 - name: Deploy Flask App Docker Container
-  hosts: aws_ec2
+  hosts: 
+    - instance_name_my_instance_1
+    - instance_name_my_instance_2
+
   become: yes
   tasks:
     - name: Pull Flask app Docker image
