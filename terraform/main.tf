@@ -1,3 +1,10 @@
+# Define the environment variable
+variable "environment" {
+  description = "The environment to deploy (dev, prod, test)"
+  type        = string
+  default     = "dev"
+}
+
 # Define the AWS provider
 provider "aws" {
   region = "us-east-1"
@@ -5,11 +12,11 @@ provider "aws" {
 
 # Create a VPC with DNS settings
 resource "aws_vpc" "my_vpc" {
-  cidr_block           = "10.0.0.0/16"  
+  cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "my-vpc-${terraform.workspace}"
+    Name = "my-vpc-${var.environment}"
   }
 }
 
@@ -18,7 +25,7 @@ resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.my_vpc.id
 
   tags = {
-    Name = "my-igw-${terraform.workspace}"
+    Name = "my-igw-${var.environment}"
   }
 }
 
@@ -32,7 +39,7 @@ resource "aws_route_table" "my_route_table" {
   }
 
   tags = {
-    Name = "my-route-table-${terraform.workspace}"
+    Name = "my-route-table-${var.environment}"
   }
 }
 
@@ -43,7 +50,7 @@ resource "aws_subnet" "my_subnet_1" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
   tags = {
-    Name = "my-subnet-1-${terraform.workspace}"
+    Name = "my-subnet-1-${var.environment}"
   }
 }
 
@@ -53,7 +60,7 @@ resource "aws_subnet" "my_subnet_2" {
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
   tags = {
-    Name = "my-subnet-2-${terraform.workspace}"
+    Name = "my-subnet-2-${var.environment}"
   }
 }
 
@@ -63,24 +70,8 @@ resource "aws_subnet" "my_subnet_3" {
   availability_zone       = "us-east-1c"
   map_public_ip_on_launch = true
   tags = {
-    Name = "my-subnet-3-${terraform.workspace}"
+    Name = "my-subnet-3-${var.environment}"
   }
-}
-
-# Associate Route Table with Subnets
-resource "aws_route_table_association" "my_subnet_association_1" {
-  subnet_id      = aws_subnet.my_subnet_1.id
-  route_table_id = aws_route_table.my_route_table.id
-}
-
-resource "aws_route_table_association" "my_subnet_association_2" {
-  subnet_id      = aws_subnet.my_subnet_2.id
-  route_table_id = aws_route_table.my_route_table.id
-}
-
-resource "aws_route_table_association" "my_subnet_association_3" {
-  subnet_id      = aws_subnet.my_subnet_3.id
-  route_table_id = aws_route_table.my_route_table.id
 }
 
 # Create a Security Group
@@ -116,12 +107,11 @@ resource "aws_security_group" "my_sg" {
   }
 
   tags = {
-    Name = "my-sg-${terraform.workspace}"
+    Name = "my-sg-${var.environment}"
   }
 }
 
-# Use existing AWS Key Pair
-# Create EC2 instances, each in a different subnet
+# Create EC2 instances with environment-specific names
 resource "aws_instance" "my_instances" {
   count         = 3
   ami           = "ami-0e86e20dae9224db8"
@@ -141,7 +131,7 @@ resource "aws_instance" "my_instances" {
   vpc_security_group_ids = [aws_security_group.my_sg.id]
 
   tags = {
-    Name = "my-instance-${count.index + 1}-${terraform.workspace}"
+    Name = "my-instance-${var.environment}-${count.index + 1}"
   }
 }
 
