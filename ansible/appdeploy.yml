@@ -1,0 +1,21 @@
+---
+- name: Deploy Flask App Docker Container
+  hosts: 
+    - instance_name_my_instance_1
+    - instance_name_my_instance_2
+
+  become: yes
+  tasks:
+    - name: Pull Flask app Docker image
+      community.docker.docker_image:
+        name: lakshithaiam/my-flask-app
+        source: pull
+
+    - name: Run Flask app container
+      community.docker.docker_container:
+        name: flask_app
+        image: lakshithaiam/my-flask-app
+        state: started
+        restart_policy: always
+        ports:
+          - "5000:5000"

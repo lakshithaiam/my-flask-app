@@ -1,0 +1,11 @@
+---
+- name: Deploy to EC2 instances
+  hosts: 
+    - instance_name_my_instance_1
+    - instance_name_my_instance_2
+
+  remote_user: ubuntu  # Ensure this matches the user for your EC2 instances
+  tasks:
+    - name: Ping all EC2 instances
+      ansible.builtin.ping:
+
