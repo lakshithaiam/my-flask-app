@@ -6,7 +6,6 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials_id' // Jenkins credentials ID for Docker Hub
         GIT_REPO = 'git@github.com:lakshithaiam/my-flask-app.git' // GitHub repository SSH URL
         GIT_CREDENTIALS = 'github-ssh-key' // Jenkins credentials ID for GitHub SSH
-        
         ANSIBLE_SERVER = "54.161.97.225"
     }
     stages {
@@ -58,9 +57,14 @@ pipeline {
             }
         }
 
-    }
-
-}
+        stage{
+            steps{
+                script{
+                    echo "waiting for ec2 server to initialize"
+                    sleep(time: 240, unit: "SECONDS")
+                }
+            }
+        }
 
         stage("copy files to ansible server") {
             steps {
@@ -76,6 +80,7 @@ pipeline {
                 }
             }
         }
+
         stage("execute ansible playbook") {
             steps {
                 script {

@@ -1,5 +1,5 @@
 ansible/
-
+ansible/myenv
 
 .terraform/
 *.tfstate
