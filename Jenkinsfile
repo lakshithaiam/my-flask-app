@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-        stage{
+        stage ('waiting ec2'){
             steps{
                 script{
                     echo "waiting for ec2 server to initialize"
